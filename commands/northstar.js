@@ -1,9 +1,30 @@
 const prefix = powercord.api.commands.prefix;
-const { diff, getServers } = require(path.resolve(__dirname, 'functions.js'))
+path = require('path');
+const { diff, diffred, getServers } = require(path.resolve(__dirname, 'functions.js'))
+const url = "https://northstar.tf/client/servers"
 module.exports = {
     command: 'ns',
     description: 'A powercord version of northstar-bot',
     usage: '{c} help - for more help',
+    autocomplete: (args) => {
+        let ns = [];
+        for (i = 0; i < args.length; i ++) {
+            let cmds = ["help","convars","modes","maps","host","git","birb"]
+            let descriptions = ["List of help commands", "lists some useful convars", "lists all Titanfall2 gamemodes", "lists all Titanfall2 maps", "links hummusbird's server tutorial", "links the latest northstar release", "links hummusbird's server tutorial"]
+            ns = cmds
+                .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
+                .map((name) => ({ 
+                    command: name,
+                    description: descriptions[cmds.indexOf(name)]
+                }))
+            console.log(ns)
+        }
+
+        return {
+            commands: ns,
+            header: 'plugin',
+        };
+    },
     async executor(args) {
         switch (args[0]) {
 
@@ -13,15 +34,17 @@ module.exports = {
                     send: false,
                     result: diff(`
 + Here are a list of all available commands:
-${prefix}ns            - a general overview of northstar.tf
-${prefix}ns help          - this message
+${prefix}ns                     - a general overview of northstar.tf
+${prefix}ns help                - this message
 ${prefix}search title [string]  - searches server titles
 ${prefix}search mode [gamemode] - searches all servers running that mode
 ${prefix}search map [map]       - searches all servers running that map
-${prefix}ns convars                - lists some useful ConVars
-${prefix}ns modes                  - lists all Titanfall 2 gamemodes
-${prefix}ns maps                   - lists all Titanfall 2 maps
-${prefix}ns host                   - links hummusbird's server tutorial
+${prefix}set [cvar]             - creates a setplaylistvaroverride
+${prefix}ns convars             - lists some useful ConVars
+${prefix}ns modes               - lists all Titanfall 2 gamemodes
+${prefix}ns maps                - lists all Titanfall 2 maps
+${prefix}ns host                - links hummusbird's server tutorial
+${prefix}ns git                 - links the latest northstar release
 `)
                 }
             default:
@@ -117,13 +140,15 @@ mp_lf_uma            - UMA
 mp_coliseum          - The Coliseum
 mp_coliseum_column   - Pillars`)
                 }
-                break;
+
             case "host":
             case "vid":
             case "birb":
                 return { send: true, result: "https://youtu.be/EZ3w2Nl9SZo" }
-
-                break;
+            
+            case "git":
+                return { send: true, result: "https://github.com/R2Northstar/Northstar/releases" }
+            case "cvars":
             case "convars":
             case "vars":
                 return {
@@ -174,8 +199,6 @@ player_bleedout_firstAidTimeSelf
 player_bleedout_firstAidHealPercent
 player_bleedout_aiBleedingPlayerMissChance`)
                 }
-
-                
         }
     }
 }
