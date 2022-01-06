@@ -42,7 +42,7 @@ module.exports = {
                         autocorrect = []
                             .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
                             .map((name) => ({ command: name }))
-
+                               
                 }
             }
             else
@@ -61,13 +61,7 @@ module.exports = {
     async executor(args) {
         var data = await getServers(url)
 
-            if (typeof data == typeof "string") {
-                return {
-                    send: false,
-                    result: diffred(data)
-                }
-            }
-            else if (!args[0]) {
+            if (!args[0]) {
                 return {
                     send: false,
                     result: diffred("Please specify title, map or mode.")
@@ -91,8 +85,18 @@ module.exports = {
 
                 else { search = args[0] }
 
+                if (typeof data == typeof "string") {
+                    return {
+                        send: false,
+                        result: diffred(data)
+                    }
+                }
+                var playersOnline = 0;
+                var playerSlots = 0;
                 var lobbies = [];
                 for (i = 0; i < data.length; i++) {
+                    playersOnline += data[i]["playerCount"]
+                    playerSlots += data[i]["maxPlayers"]
                     if (data[i][parameter].toLowerCase().includes(search.toLowerCase())) {
                         lobbies.push(data[i])
                     }
@@ -103,13 +107,17 @@ module.exports = {
                 }
                 else {
                     var searchstring = `\`\`\`diff\nSearching for ${search}...\n+ ${lobbies.length} servers were found${lobbies.length > 10 ? " - displaying first 10 results" : "."}\n`
+                    var search_playersOnline = 0;
+                    var search_playerSlots = 0;
                     try {
-                        for (i = 0; i < (lobbies.length < 10 ? lobbies.length : 10); i++) {
-                            searchstring += `
+                        for (i = 0; i < lobbies.length; i++) {
+                            search_playersOnline += lobbies[i]["playerCount"]
+                            search_playerSlots += lobbies[i]["maxPlayers"]
+                            if (i < 10) { searchstring += `
 ${lobbies[i]["name"]}
 ${lobbies[i]["playerCount"] == lobbies[i]["maxPlayers"] ? "-" : "+"} ${lobbies[i]["playerCount"]}/${lobbies[i]["maxPlayers"]} players connected
 ${lobbies[i]["map"] == "mp_lobby" ? "- Currently in the lobby\n" : `+ Playing ${getGamemode(lobbies[i]["playlist"])} on ${getMapName(lobbies[i]["map"])}${lobbies[i]["hasPassword"] ? `\n- PASSWORD PROTECTED!` : ""}
-`}`
+`}`}
 
                         }
                     }
@@ -117,7 +125,9 @@ ${lobbies[i]["map"] == "mp_lobby" ? "- Currently in the lobby\n" : `+ Playing ${
                         searchstring = "```diff\n- Search failed. Please try again"
 
                     }
-                    return { send: true, result: (searchstring + "```") }
+                    var ratingstring = diff(`\nTotal ${search_playersOnline}/${search_playerSlots} players in "${search}" servers, for:\n\n+ ${search_playersOnline}/${playersOnline} or ${Math.round((search_playersOnline / playersOnline)*10000)/100}% of all NS players\n\n- ${lobbies.length}/${data.length} or ${Math.round((lobbies.length / data.length)*10000)/100}% of all NS servers`)
+                    console.log(args)
+                    return { send: true, result: (((args[1] && args[1] == "stats") || (args[2] && args[2] == "stats")) ? ratingstring : searchstring + "```") }
                 }
             }
 
