@@ -1,4 +1,5 @@
 const path = require('path')
+const fetch = require('node-fetch')
 
 const maps = {
     "mp_angel_city": "Angel City",
@@ -67,7 +68,9 @@ module.exports.diff = diff;
 
 async function getServers(url) {
     try {
-        let res = await fetch(url)
+        let res = await fetch(url, {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'JSONHttpRequest' }})
         let parsed = await res.json()
         if (parsed && Object.keys(parsed).length === 0 && parsed.constructor === Object) { //API error
             throw ("api error")
@@ -83,7 +86,7 @@ async function getServers(url) {
         }
     }
     catch (e) {
-        console.log("api error")
+        console.log(e)
         return `${url} is unavailable!`
     }
 }

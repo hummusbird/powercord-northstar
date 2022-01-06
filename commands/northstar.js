@@ -1,7 +1,7 @@
 const prefix = powercord.api.commands.prefix;
 path = require('path');
 const { diff, diffred, getServers } = require(path.resolve(__dirname, 'functions.js'))
-const url = "https://northstar.tf/client/servers"
+const url = "https://cors-anywhere.herokuapp.com/https://northstar.tf/client/servers"
 module.exports = {
     command: 'ns',
     description: 'A powercord version of northstar-bot',
@@ -9,15 +9,23 @@ module.exports = {
     autocomplete: (args) => {
         let ns = [];
         for (i = 0; i < args.length; i ++) {
-            let cmds = ["help","convars","modes","maps","host","git","birb"]
-            let descriptions = ["List of help commands", "lists some useful convars", "lists all Titanfall2 gamemodes", "lists all Titanfall2 maps", "links hummusbird's server tutorial", "links the latest northstar release", "links hummusbird's server tutorial"]
-            ns = cmds
-                .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
-                .map((name) => ({ 
-                    command: name,
-                    description: descriptions[cmds.indexOf(name)]
-                }))
-            console.log(ns)
+            if (i == 0){
+                let cmds = ["status","help","convars","modes","maps","host","git","birb"]
+                let descriptions = ["List of help commands", "lists some useful convars", "lists all Titanfall2 gamemodes", "lists all Titanfall2 maps", "links hummusbird's server tutorial", "links the latest northstar release", "links hummusbird's server tutorial"]
+                ns = cmds
+                    .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
+                    .map((name) => ({ 
+                        command: name,
+                        description: descriptions[cmds.indexOf(name)]
+                    }))
+            }
+            else 
+            {
+                ns = []
+                    .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
+                    .map((name) => ({ command: name }))
+            }
+
         }
 
         return {
@@ -78,7 +86,6 @@ ${prefix}ns git                 - links the latest northstar release
 `)
                     }
                 }
-                break;
 
             case "gamemode":
             case "mode":
@@ -107,7 +114,6 @@ arena     - 1v1 Arena
 ctf_comp  - Capture the Flag
 hs        - Hide and Seek`)
                 }
-                break;
 
             case "map":
             case "maps":

@@ -1,16 +1,17 @@
 const prefix = powercord.api.commands.prefix;
-const { diff, getServers } = require(path.resolve(__dirname, 'functions.js'))
+const { diff, diffred, getServers, getMapName, getGamemode } = require(path.resolve(__dirname, 'functions.js'))
+const url = "https://cors-anywhere.herokuapp.com/https://northstar.tf/client/servers"
 
 module.exports = {
     command: 'search',
     description: 'searches northstar servers',
     usage: '{c} help - for more help',
     autocomplete: (args) => {
-        let cvars = [];
+        let autocorrect = []
         for (i = 0; i < args.length; i ++) {
             if ( i == 0 )
             {
-                cvars = ["gamemode","map","name"]
+                autocorrect = ["gamemode","map","name"]
                     .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
                     .map((name) => ({ command: name }))
             }
@@ -19,11 +20,11 @@ module.exports = {
                 switch (args[0])
                 {
                     case "modes":
-                    case "gamemodes":
+                    case "gamemode":
                     case "mode":
                         modenames = ["Skirmish", "Amped Hardpoint", "Capture the Flag", "Last Titan Standing", "Pilots v Pilots", "Free For All", "Live Fire", "Marked for Death", "Titan Brawl", "Free Agents", "Gun Game", "Infection", "Titan Tag", "Amped Killrace", "Fastball", "1v1 Arena", "Capture the Flag", "Hide and Seek"]
                         gamemodes = ["tdm","cp","ctf","lts","ps","ffa","speedball","mfd","ttdm","fra","gg","inf","tt","kr","fastball","arena","ctf_comp","hs"]
-                        cvars = gamemodes
+                        autocorrect = gamemodes
                             .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
                             .map((name) => ({
                                 command: name,
@@ -32,29 +33,93 @@ module.exports = {
                         break;
                     case "maps":
                     case "map":
-                        cvars = ["mp_angel_city","mp_black_water_canal","mp_grave","mp_colony02","mp_complex3","mp_crashsite3","mp_drydock","mp_eden","mp_thaw","mp_forwardbase_kodai","mp_glitch","mp_homestead","mp_relic02","mp_rise","mp_wargames","mp_lobby","mp_lf_deck","mp_lf_meadow","mp_lf_stacks","mp_lf_township","mp_lf_traffic","mp_lf_uma","mp_coliseum","mp_coliseum_column"]
+                        autocorrect = ["mp_angel_city","mp_black_water_canal","mp_grave","mp_colony02","mp_complex3","mp_crashsite3","mp_drydock","mp_eden","mp_thaw","mp_forwardbase_kodai","mp_glitch","mp_homestead","mp_relic02","mp_rise","mp_wargames","mp_lobby","mp_lf_deck","mp_lf_meadow","mp_lf_stacks","mp_lf_township","mp_lf_traffic","mp_lf_uma","mp_coliseum","mp_coliseum_column"]
                             .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
                             .map((name) => ({ command: name }))
                         break;
+                    case "name":
+                    case "title":
+                        autocorrect = []
+                            .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
+                            .map((name) => ({ command: name }))
+
                 }
+            }
+            else
+            {
+                autocorrect = []
+                    .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
+                    .map((name) => ({ command: name }))
             }
 
         }
-        console.log(cvars)
         return {
-            commands: cvars,
+            commands: autocorrect,
             header: 'plugin',
         };
     },
     async executor(args) {
-        var setvar = "";
-        for (var i = 0; i < args.length; i++)
-        {
-            setvar += args[i] + (args.length == i + 1 ? "" : " ");
-        }
-        return {
-            send: true,
-            result: `\`+setplaylistvaroverrides "${setvar}"\``
-        }
+        var data = await getServers(url)
+
+            if (typeof data == typeof "string") {
+                return {
+                    send: false,
+                    result: diffred(data)
+                }
+            }
+            else if (!args[0]) {
+                return {
+                    send: false,
+                    result: diffred("Please specify title, map or mode.")
+                }
+            }
+            else {
+                var search = args[1];
+                var parameter = "name";
+                if (args[0] == "title" || args[0] == "name") {
+                    if (!args[1]) { return { send: false, result: diffred("Please specify a search term.") } }
+                    parameter = "name"
+                }
+                else if (args[0] == "map" || args[0] == "maps") {
+                    if (getMapName(args[1]) == undefined) { return { send: false, result: diffred("Please specify a valid map.") } }
+                    parameter = "map"
+                }
+                else if (args[0] == "mode" || args[0] == "modes" || args[0] == "gamemode"){
+                    if (getGamemode(args[1]) == undefined) { return { send: false, result: diffred("Please specify a valid gamemode.") } }
+                    parameter = "playlist"
+                }
+
+                else { search = args[0] }
+
+                var lobbies = [];
+                for (i = 0; i < data.length; i++) {
+                    if (data[i][parameter].toLowerCase().includes(search.toLowerCase())) {
+                        lobbies.push(data[i])
+                    }
+                }
+
+                if (lobbies.length == 0) {
+                    return { send: false, result: diffred("No servers were found") }
+                }
+                else {
+                    var searchstring = `\`\`\`diff\nSearching for ${search}...\n+ ${lobbies.length} servers were found${lobbies.length > 10 ? " - displaying first 10 results" : "."}\n`
+                    try {
+                        for (i = 0; i < (lobbies.length < 10 ? lobbies.length : 10); i++) {
+                            searchstring += `
+${lobbies[i]["name"]}
+${lobbies[i]["playerCount"] == lobbies[i]["maxPlayers"] ? "-" : "+"} ${lobbies[i]["playerCount"]}/${lobbies[i]["maxPlayers"]} players connected
+${lobbies[i]["map"] == "mp_lobby" ? "- Currently in the lobby\n" : `+ Playing ${getGamemode(lobbies[i]["playlist"])} on ${getMapName(lobbies[i]["map"])}${lobbies[i]["hasPassword"] ? `\n- PASSWORD PROTECTED!` : ""}
+`}`
+
+                        }
+                    }
+                    catch {
+                        searchstring = "```diff\n- Search failed. Please try again"
+
+                    }
+                    return { send: true, result: (searchstring + "```") }
+                }
+            }
+
     }
 }
