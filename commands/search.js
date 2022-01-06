@@ -22,8 +22,8 @@ module.exports = {
                     case "modes":
                     case "gamemode":
                     case "mode":
-                        modenames = ["Skirmish", "Amped Hardpoint", "Capture the Flag", "Last Titan Standing", "Pilots v Pilots", "Free For All", "Live Fire", "Marked for Death", "Titan Brawl", "Free Agents", "Gun Game", "Infection", "Titan Tag", "Amped Killrace", "Fastball", "1v1 Arena", "Capture the Flag", "Hide and Seek"]
-                        gamemodes = ["tdm","cp","ctf","lts","ps","ffa","speedball","mfd","ttdm","fra","gg","inf","tt","kr","fastball","arena","ctf_comp","hs"]
+                        modenames = ["Skirmish", "Amped Hardpoint", "Capture the Flag", "Last Titan Standing", "Pilots v Pilots", "Free For All", "Live Fire", "Marked for Death", "Titan Brawl", "Free Agents", "Gun Game", "Infection", "Titan Tag", "Amped Killrace", "Fastball", "1v1 Arena", "Capture the Flag", "Hide and Seek", "The Hidden", "One in the Chamber"]
+                        gamemodes = ["tdm","cp","ctf","lts","ps","ffa","speedball","mfd","ttdm","fra","gg","inf","tt","kr","fastball","arena","ctf_comp","hs","hidden","chamber"]
                         autocorrect = gamemodes
                             .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
                             .map((name) => ({

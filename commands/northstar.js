@@ -112,7 +112,9 @@ kr        - Amped Killrace
 fastball  - Fastball
 arena     - 1v1 Arena
 ctf_comp  - Capture the Flag
-hs        - Hide and Seek`)
+hs        - Hide and Seek
+hidden    - The Hidden
+chamber   - One in the Chamber`)
                 }
 
             case "map":
