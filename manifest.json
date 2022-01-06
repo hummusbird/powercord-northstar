@@ -1,6 +1,6 @@
 {
   "name": "northstar",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "a powercord version of northstar-bot",
   "author": "hummusbird",
   "permissions": ["ext_api"],
