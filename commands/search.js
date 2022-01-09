@@ -1,6 +1,6 @@
 const prefix = powercord.api.commands.prefix;
 const { diff, diffred, getServers, getMapName, getGamemode } = require(path.resolve(__dirname, 'functions.js'))
-const url = "https://cors-anywhere.herokuapp.com/https://northstar.tf/client/servers"
+const url = "https://northstar.tf/client/servers"
 
 module.exports = {
     command: 'search',

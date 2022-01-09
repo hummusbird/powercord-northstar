@@ -37,7 +37,8 @@ player_bleedout_bleedoutTime
 player_bleedout_firstAidTime
 player_bleedout_firstAidTimeSelf
 player_bleedout_firstAidHealPercent
-player_bleedout_aiBleedingPlayerMissChance`
+player_bleedout_aiBleedingPlayerMissChance
+max_players`
 
 const cvardesc = `Air acceleration for pilots and titans
 Pilot health multiplier
@@ -76,7 +77,8 @@ player_bleedout_bleedoutTime
 player_bleedout_firstAidTime
 player_bleedout_firstAidTimeSelf
 player_bleedout_firstAidHealPercent
-player_bleedout_aiBleedingPlayerMissChance`
+player_bleedout_aiBleedingPlayerMissChance
+Maximum players. Use -maxplayersplaylist too`
 
 module.exports = {
     command: 'set',

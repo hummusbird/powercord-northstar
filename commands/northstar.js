@@ -1,7 +1,8 @@
 const prefix = powercord.api.commands.prefix;
 path = require('path');
 const { diff, diffred, getServers } = require(path.resolve(__dirname, 'functions.js'))
-const url = "https://cors-anywhere.herokuapp.com/https://northstar.tf/client/servers"
+const url = "https://northstar.tf/client/servers"
+
 module.exports = {
     command: 'ns',
     description: 'A powercord version of northstar-bot',
