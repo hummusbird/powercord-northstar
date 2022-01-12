@@ -15,3 +15,4 @@ There are three basic commands, and a few subcommands for .ns.
 .search map [map]             - seraches for all servers running that map
 .set [pvar] [val]             - creates a +setplaylistvaroverrides cvar
 ```
+append stats to the end of a search command for a more compact result
