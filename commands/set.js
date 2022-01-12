@@ -116,7 +116,7 @@ module.exports = {
             setvar += args[i] + (args.length == i + 1 ? "" : " ");
         }
         return {
-            send: powercord.pluginManager.get("powercord-northstar").settings.get('public', 'false'),
+            send: true,
             result: `\`+setplaylistvaroverrides "${setvar}"\``
         }
     }
