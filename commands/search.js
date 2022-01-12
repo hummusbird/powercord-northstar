@@ -1,6 +1,5 @@
 const prefix = powercord.api.commands.prefix;
 const { diff, diffred, getServers, getMapName, getGamemode } = require(path.resolve(__dirname, 'functions.js'))
-const url = "https://northstar.tf/client/servers"
 
 module.exports = {
     command: 'search',
@@ -59,7 +58,7 @@ module.exports = {
         };
     },
     async executor(args) {
-        var data = await getServers(url)
+        var data = await getServers()
 
             if (!args[0]) {
                 return {
@@ -127,7 +126,7 @@ ${lobbies[i]["map"] == "mp_lobby" ? "- Currently in the lobby\n" : `+ Playing ${
                     }
                     var ratingstring = diff(`\nTotal ${search_playersOnline}/${search_playerSlots} players in "${search}" servers, for:\n\n+ ${search_playersOnline}/${playersOnline} or ${Math.round((search_playersOnline / playersOnline)*10000)/100}% of all NS players\n\n- ${lobbies.length}/${data.length} or ${Math.round((lobbies.length / data.length)*10000)/100}% of all NS servers`)
                     console.log(args)
-                    return { send: true, result: (((args[1] && args[1] == "stats") || (args[2] && args[2] == "stats")) ? ratingstring : searchstring + "```") }
+                    return { send: powercord.pluginManager.get("powercord-northstar").settings.get('public', 'false'), result: ((args[args.length] == "stats") ? ratingstring : searchstring + "```") }
                 }
             }
 

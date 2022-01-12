@@ -1,7 +1,6 @@
 const prefix = powercord.api.commands.prefix;
 path = require('path');
 const { diff, diffred, getServers } = require(path.resolve(__dirname, 'functions.js'))
-const url = "https://northstar.tf/client/servers"
 
 module.exports = {
     command: 'ns',
@@ -11,7 +10,7 @@ module.exports = {
         let ns = [];
         for (i = 0; i < args.length; i ++) {
             if (i == 0){
-                let cmds = ["status","help","convars","modes","maps","host","git","birb"]
+                let cmds = ["status","help","playlistvars","modes","maps","host","git","birb"]
                 let descriptions = ["List of help commands", "lists some useful convars", "lists all Titanfall2 gamemodes", "lists all Titanfall2 maps", "links hummusbird's server tutorial", "links the latest northstar release", "links hummusbird's server tutorial"]
                 ns = cmds
                     .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
@@ -43,13 +42,13 @@ module.exports = {
                     send: false,
                     result: diff(`
 + Here are a list of all available commands:
-${prefix}ns                     - a general overview of northstar.tf
+${prefix}ns status              - a general overview of northstar.tf
 ${prefix}ns help                - this message
 ${prefix}search title [string]  - searches server titles
 ${prefix}search mode [gamemode] - searches all servers running that mode
 ${prefix}search map [map]       - searches all servers running that map
-${prefix}set [cvar]             - creates a setplaylistvaroverride
-${prefix}ns convars             - lists some useful ConVars
+${prefix}set [playlistvar]      - creates a setplaylistvaroverride
+${prefix}ns pvars               - lists some useful ConVars
 ${prefix}ns modes               - lists all Titanfall 2 gamemodes
 ${prefix}ns maps                - lists all Titanfall 2 maps
 ${prefix}ns host                - links hummusbird's server tutorial
@@ -58,7 +57,7 @@ ${prefix}ns git                 - links the latest northstar release
                 }
             default:
             case "status":
-                var data = await getServers(url)
+                var data = await getServers()
 
                 if (typeof data == typeof "string") {
                     return {
@@ -160,6 +159,8 @@ mp_coliseum_column   - Pillars`)
             case "cvars":
             case "convars":
             case "vars":
+            case "playlistvars":
+            case "pvars":
                 return {
                     send: true,
                     result: diff(`
