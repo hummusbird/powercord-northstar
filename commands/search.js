@@ -126,7 +126,7 @@ ${lobbies[i]["map"] == "mp_lobby" ? "- Currently in the lobby\n" : `+ Playing ${
                     }
                     var ratingstring = diff(`\nTotal ${search_playersOnline}/${search_playerSlots} players in "${search}" servers, for:\n\n+ ${search_playersOnline}/${playersOnline} or ${Math.round((search_playersOnline / playersOnline)*10000)/100}% of all NS players\n\n- ${lobbies.length}/${data.length} or ${Math.round((lobbies.length / data.length)*10000)/100}% of all NS servers`)
                     console.log(args)
-                    return { send: powercord.pluginManager.get("powercord-northstar").settings.get('public', 'false'), result: ((args[args.length] == "stats") ? ratingstring : searchstring + "```") }
+                    return { send: powercord.pluginManager.get("powercord-northstar").settings.get('public', 'false'), result: ((args[args.length - 1] == "stats") ? ratingstring : searchstring + "```") }
                 }
             }
 
