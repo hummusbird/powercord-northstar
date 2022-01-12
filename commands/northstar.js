@@ -1,7 +1,6 @@
 const prefix = powercord.api.commands.prefix;
 path = require('path');
 const { diff, diffred, getServers } = require(path.resolve(__dirname, 'functions.js'))
-const url = "https://northstar.tf/clientservers "//powercord.pluginManager.get("powercord-northstar").settings.get('defaultMS', 'https://northstar.tf') + "/client/servers"
 
 module.exports = {
     command: 'ns',
@@ -11,7 +10,7 @@ module.exports = {
         let ns = [];
         for (i = 0; i < args.length; i ++) {
             if (i == 0){
-                let cmds = ["status","help","convars","modes","maps","host","git","birb"]
+                let cmds = ["status","help","playlistvars","modes","maps","host","git","birb"]
                 let descriptions = ["List of help commands", "lists some useful convars", "lists all Titanfall2 gamemodes", "lists all Titanfall2 maps", "links hummusbird's server tutorial", "links the latest northstar release", "links hummusbird's server tutorial"]
                 ns = cmds
                     .filter((name) => {name = name.toLowerCase();return name.startsWith(args[i])})
@@ -58,7 +57,7 @@ ${prefix}ns git                 - links the latest northstar release
                 }
             default:
             case "status":
-                var data = await getServers(url)
+                var data = await getServers()
 
                 if (typeof data == typeof "string") {
                     return {
@@ -78,9 +77,9 @@ ${prefix}ns git                 - links the latest northstar release
                         playerSlots += hasPwd ? 0 : data[i]["maxPlayers"];
                     }
                     return {
-                        send: powercord.pluginManager.get("powercord-northstar").settings.get('public', 'false'),
+                        send: true,
                         result: diff(`
-## ${url} STATUS: ##\n
+## NORTHSTAR.TF STATUS: ##\n
 + Servers Online: ${data.length}\n
 - Password Protected Servers: ${protectedLobbies}\n
 + Players in-game: ${playersOnline}/${playerSlots} (${Math.round((playersOnline / playerSlots) * 100)}%)
@@ -93,7 +92,7 @@ ${prefix}ns git                 - links the latest northstar release
             case "gamemodes":
             case "modes":
                 return {
-                    send: powercord.pluginManager.get("powercord-northstar").settings.get('public', 'false'),
+                    send: true,
                     result: diff(`
 + Titanfall 2 Gamemodes:
 tdm       - Skirmish
@@ -121,7 +120,7 @@ chamber   - One in the Chamber`)
             case "map":
             case "maps":
                 return {
-                    send: powercord.pluginManager.get("powercord-northstar").settings.get('public', 'false'),
+                    send: true,
                     result: diff(`
 + Titanfall 2 Maps:
 mp_angel_city        - Angel City
@@ -153,17 +152,17 @@ mp_coliseum_column   - Pillars`)
             case "host":
             case "vid":
             case "birb":
-                return { send: powercord.pluginManager.get("powercord-northstar").settings.get('public', 'false'), result: "https://youtu.be/EZ3w2Nl9SZo" }
+                return { send: true, result: "https://youtu.be/EZ3w2Nl9SZo" }
             
             case "git":
-                return { send: powercord.pluginManager.get("powercord-northstar").settings.get('public', 'false'), result: "https://github.com/R2Northstar/Northstar/releases" }
+                return { send: true, result: "https://github.com/R2Northstar/Northstar/releases" }
             case "cvars":
             case "convars":
             case "vars":
             case "playlistvars":
             case "pvars":
                 return {
-                    send: powercord.pluginManager.get("powercord-northstar").settings.get('public', 'false'),
+                    send: true,
                     result: diff(`
 custom_air_accel_pilot
 pilot_health_multiplier

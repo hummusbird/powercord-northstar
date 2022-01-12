@@ -1,6 +1,5 @@
 const prefix = powercord.api.commands.prefix;
 const { diff, diffred, getServers, getMapName, getGamemode } = require(path.resolve(__dirname, 'functions.js'))
-const url = powercord.pluginManager.get("powercord-northstar").settings.get('defaultMS', 'https://northstar.tf') + "/client/servers"
 
 module.exports = {
     command: 'search',
@@ -59,7 +58,7 @@ module.exports = {
         };
     },
     async executor(args) {
-        var data = await getServers(url)
+        var data = await getServers()
 
             if (!args[0]) {
                 return {

@@ -9,7 +9,7 @@ module.exports = AsyncComponent.from((async () => {
             super(props)
 
             this.state = {
-                public: this.props.getSetting('public', false),
+                public: this.props.getSetting('public', true),
                 msurl: this.props.getSetting('defaultMS', 'https://northstar.tf'),
             };
         }
@@ -17,16 +17,15 @@ module.exports = AsyncComponent.from((async () => {
         render() {
             return <>
                 <div>
-                    <SwitchItem
-                        note="Send powercord-northstar messages publically"
-                        value={this.state.public}
-                        onChange={() => {
-                            this.setState({ public: !this.state.public })
-                            this.props.toggleSetting('public')
-                        }}
-                    >
-                        Public messages
-                    </SwitchItem>
+                    <TextInput
+                            note="Default masterserver URL"
+                            defaultValue={this.state.msurl}
+                            onChange={(value) => {
+                                this.setState({ msurl: value })
+                                this.props.updateSetting('defaultMS', value)
+                            }}
+                        >
+                    </TextInput>
                 </div>
             </>
         }

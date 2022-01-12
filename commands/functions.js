@@ -1,5 +1,4 @@
 const path = require('path')
-const fetch = require('node-fetch')
 
 const maps = {
     "mp_angel_city": "Angel City",
@@ -68,11 +67,11 @@ function diff(string) {
 
 module.exports.diff = diff;
 
-async function getServers(url) {
+async function getServers() {
+    const url = powercord.pluginManager.get("powercord-northstar").settings.get('defaultMS', 'https://northstar.tf') + "/client/servers"
+
     try {
-        let res = await fetch(url, {
-            method: 'GET',
-            headers: { 'X-Requested-With': 'JSONHttpRequest' }})
+        let res = await fetch(url)
         let parsed = await res.json()
         if (parsed && Object.keys(parsed).length === 0 && parsed.constructor === Object) { //API error
             throw ("api error")
